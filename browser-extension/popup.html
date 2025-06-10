@@ -1,0 +1,197 @@
+class TimerPopup {
+  constructor() {
+    this.isTimerRunning = false;
+    this.currentTimer = null;
+    this.projects = [];
+    this.timeEntries = [];
+    this.showingAddProject = false;
+    this.currentSession = null;
+    this.selectedProject = null;
+    this.timerInterval = null;
+    this.syncInProgress = false;
+    
+    // Server configuration
+    this.serverConfig = {
+      baseUrl: 'https://your-api-server.com/api', // Replace with your actual API
+      apiKey: null, // Will be loaded from storage
+      userId: null   // Will be loaded from storage
+    };
+    
+    this.init();
+  }
+
+  async init() {
+    try {
+      // Load server config and authenticate
+      await this.loadServerConfig();
+      
+      // Load data from server if authenticated, otherwise load locally
+      if (this.serverConfig.apiKey) {
+        await this.syncFromServer();
+      } else {
+        await this.loadLocalData();
+      }
+      
+      this.setupEventListeners();
+      this.populateProjectSelector();
+      this.updateStats();
+      this.updateRecentActivity();
+      
+      // Check for running timer
+      this.checkForRunningTimer();
+      
+      // Auto-sync every 5 minutes if authenticated
+      if (this.serverConfig.apiKey) {
+        setInterval(() => this.autoSync(), 5 * 60 * 1000);
+      }
+      
+    } catch (error) {
+      console.error('Initialization error:', error);
+      this.showNotification('Failed to initialize app', 'error');
+    }
+  }
+
+  // ===== SERVER AUTHENTICATION & CONFIG =====
+  
+  async loadServerConfig() {
+    try {
+      const result = await chrome.storage.local.get(['timer_api_key', 'timer_user_id']);
+      this.serverConfig.apiKey = result.timer_api_key;
+      this.serverConfig.userId = result.timer_user_id;
+      
+      // If no credentials, try to authenticate
+      if (!this.serverConfig.apiKey) {
+        await this.authenticateUser();
+      }
+    } catch (error) {
+      console.error('Error loading server config:', error);
+    }
+  }
+
+  async authenticateUser() {
+    try {
+      // Get or create a unique device ID
+      let deviceId = await this.getDeviceId();
+      
+      const response = await fetch(`${this.serverConfig.baseUrl}/auth/device`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          deviceId: deviceId,
+          deviceName: navigator.userAgent,
+          appVersion: '1.0.0'
+        })
+      });
+
+      if (response.ok) {
+        const authData = await response.json();
+        this.serverConfig.apiKey = authData.apiKey;
+        this.serverConfig.userId = authData.userId;
+        
+        // Save credentials
+        await chrome.storage.local.set({
+          'timer_api_key': authData.apiKey,
+          'timer_user_id': authData.userId
+        });
+        
+        this.showNotification('Authentication successful', 'success');
+      } else {
+        throw new Error('Authentication failed');
+      }
+    } catch (error) {
+      console.error('Authentication error:', error);
+      this.showNotification('Using offline mode', 'warning');
+    }
+  }
+
+  async getDeviceId() {
+    try {
+      const result = await chrome.storage.local.get('device_id');
+      if (result.device_id) {
+        return result.device_id;
+      }
+      
+      // Generate new device ID
+      const deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      await chrome.storage.local.set({ 'device_id': deviceId });
+      return deviceId;
+    } catch (error) {
+      return 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+  }
+
+  // ===== SERVER API METHODS =====
+
+  async makeApiRequest(endpoint, options = {}) {
+    if (!this.serverConfig.apiKey) {
+      throw new Error('Not authenticated');
+    }
+
+    const url = `${this.serverConfig.baseUrl}${endpoint}`;
+    const requestOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.serverConfig.apiKey}`,
+        'X-User-ID': this.serverConfig.userId,
+        ...options.headers
+      },
+      ...options
+    };
+
+    const response = await fetch(url, requestOptions);
+    
+    if (response.status === 401) {
+      // Token expired, try to re-authenticate
+      await this.authenticateUser();
+      if (this.serverConfig.apiKey) {
+        // Retry the request with new token
+        requestOptions.headers['Authorization'] = `Bearer ${this.serverConfig.apiKey}`;
+        return await fetch(url, requestOptions);
+      }
+    }
+    
+    return response;
+  }
+
+  // ===== PROJECT MANAGEMENT =====
+
+  async saveNewProject() {
+    const nameInput = document.getElementById('projectName');
+    const descInput = document.getElementById('projectDescription');
+    const colorInput = document.getElementById('projectColor');
+    
+    const name = nameInput.value.trim();
+    
+    if (!name) {
+      this.showNotification('Project name is required', 'error');
+      nameInput.focus();
+      return;
+    }
+
+    // Check if project name already exists
+    if (this.projects.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+      this.showNotification('Project name already exists', 'error');
+      nameInput.focus();
+      return;
+    }
+
+    const saveBtn = document.getElementById('saveProject');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    try {
+      const projectData = {
+        name: name,
+        description: descInput.value.trim(),
+        color: colorInput.value,
+        isActive: true,
+        createdAt: new Date().toISOString()
+      };
+
+      let newProject;
+
+      if (this.serverConfig.apiKey) {
+        // Create on server
+        const response = await this.

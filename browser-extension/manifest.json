@@ -1,0 +1,97 @@
+{
+  "manifest_version": 3,
+  "name": "Financial Cents Timer Pro",
+  "version": "2.0.0",
+  "description": "Advanced time tracking with AI-powered automation",
+  "author": "Financial Cents",
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png", 
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Financial Cents Timer",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+
+  "permissions": [
+    "storage",
+    "activeTab",
+    "idle", 
+    "alarms",
+    "notifications",
+    "tabs",
+    "windows",
+    "scripting",
+    "webNavigation"
+  ],
+
+  "host_permissions": [
+    "http://localhost:3000/*",
+    "https://*.onrender.com/*",
+    "https://*.railway.app/*", 
+    "https://*.vercel.app/*",
+    "https://*.netlify.app/*"
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "analytics/dashboard.html",
+        "analytics/dashboard.css", 
+        "analytics/dashboard.js",
+        "icons/*"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+
+  "commands": {
+    "start-timer": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Start/Stop timer"
+    },
+    "quick-entry": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+E", 
+        "mac": "Command+Shift+E"
+      },
+      "description": "Add quick time entry"
+    },
+    "open-dashboard": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+D",
+        "mac": "Command+Shift+D" 
+      },
+      "description": "Open analytics dashboard"
+    }
+  },
+
+  "minimum_chrome_version": "88",
+  "offline_enabled": true
+}

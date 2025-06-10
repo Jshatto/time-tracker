@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: financial-cents-server
+    env: node
+    buildCommand: cd server && npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        value: <insert your Render MongoDB URI here>

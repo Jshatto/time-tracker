@@ -1,0 +1,142 @@
+{
+  "name": "financial-cents-timer-desktop",
+  "version": "2.0.0",
+  "description": "Financial Cents Time Tracker Desktop App with Advanced Window Tracking and Cross-Platform Sync",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux",
+    "clean": "rimraf dist/",
+    "pack": "electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps",
+    "rebuild": "electron-rebuild",
+    "test": "jest",
+    "lint": "eslint src/",
+    "dist": "npm run build"
+  },
+  "build": {
+    "appId": "com.financialcents.timer",
+    "productName": "Financial Cents Timer",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "public/**/*",
+      "node_modules/**/*",
+      "!node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!node_modules/*.d.ts",
+      "!node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "dir",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "public/assets/icon.ico",
+      "requestedExecutionLevel": "asInvoker",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "public/assets/icon.icns",
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "public/assets/icon.png",
+      "category": "Office"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerIcon": "public/assets/icon.ico",
+      "uninstallerIcon": "public/assets/icon.ico"
+    },
+    "compression": "store",
+    "publish": null,
+    "nodeGypRebuild": false,
+    "buildDependenciesFromSource": false,
+    "includeSubNodeModules": true
+  },
+  "dependencies": {
+    "electron": "^28.3.3",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^6.1.7",
+    "electron-log": "^5.0.1",
+    "active-win": "^8.0.0",
+    "node-fetch": "^3.3.2",
+    "ws": "^8.14.2",
+    "moment": "^2.29.4",
+    "lodash": "^4.17.21",
+    "uuid": "^9.0.1",
+    "fuzzball": "^2.1.2",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.9.1",
+    "electron-rebuild": "^3.2.9",
+    "rimraf": "^5.0.5",
+    "jest": "^29.7.0",
+    "eslint": "^8.55.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "time-tracking",
+    "productivity",
+    "electron",
+    "desktop",
+    "cross-platform",
+    "window-tracking",
+    "analytics"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "homepage": "https://github.com/yourusername/financial-cents-timer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/financial-cents-timer.git"
+  }
+}

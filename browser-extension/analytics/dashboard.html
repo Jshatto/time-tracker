@@ -1,0 +1,167 @@
+<!-- browser-extension/analytics/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Cents Timer - Analytics Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1>📊 Analytics Dashboard</h1>
+                <div class="header-controls">
+                    <select id="timeRange" class="time-range-select">
+                        <option value="today">Today</option>
+                        <option value="week" selected>This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="all">All Time</option>
+                    </select>
+                    <button id="refreshBtn" class="btn btn-primary">🔄 Refresh</button>
+                    <button id="exportBtn" class="btn btn-secondary">📤 Export</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <!-- Summary Cards -->
+            <section class="summary-cards">
+                <div class="card">
+                    <div class="card-icon"⏱️</div>
+                    <div class="card-content">
+                        <h3>Total Time</h3>
+                        <div class="card-value" id="totalTime">0h 0m</div>
+                        <div class="card-change" id="totalTimeChange">+0% from last period</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-content">
+                        <h3>Productivity Score</h3>
+                        <div class="card-value" id="productivityScore">0%</div>
+                        <div class="card-change" id="productivityChange">+0% from last period</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🔀</div>
+                    <div class="card-content">
+                        <h3>Context Switches</h3>
+                        <div class="card-value" id="contextSwitches">0</div>
+                        <div class="card-change" id="switchesChange">+0% from last period</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">⭐</div>
+                    <div class="card-content">
+                        <h3>Focus Score</h3>
+                        <div class="card-value" id="focusScore">0%</div>
+                        <div class="card-change" id="focusChange">+0% from last period</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Time Distribution by Project</h3>
+                        <div class="chart-controls">
+                            <button class="chart-type-btn active" data-type="pie">🥧 Pie</button>
+                            <button class="chart-type-btn" data-type="bar">📊 Bar</button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <canvas id="projectChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Daily Activity Timeline</h3>
+                    </div>
+                    <div class="chart-content">
+                        <canvas id="timelineChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Insights Section -->
+            <section class="insights-section">
+                <div class="insights-container">
+                    <h3>🧠 AI Insights</h3>
+                    <div id="insightsList" class="insights-list">
+                        <div class="insight-item loading">
+                            <div class="insight-icon">🔍</div>
+                            <div class="insight-content">
+                                <div class="insight-title">Analyzing your patterns...</div>
+                                <div class="insight-description">Please wait while we generate insights.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="patterns-container">
+                    <h3>📈 Detected Patterns</h3>
+                    <div id="patternsList" class="patterns-list">
+                        <!-- Patterns will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Window Activity Section -->
+            <section class="activity-section">
+                <div class="activity-header">
+                    <h3>🪟 Window Activity</h3>
+                    <div class="activity-filters">
+                        <select id="categoryFilter">
+                            <option value="all">All Categories</option>
+                            <option value="development">Development</option>
+                            <option value="design">Design</option>
+                            <option value="communication">Communication</option>
+                            <option value="productivity">Productivity</option>
+                            <option value="social_media">Social Media</option>
+                            <option value="entertainment">Entertainment</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="activity-table-container">
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>Domain</th>
+                                <th>Category</th>
+                                <th>Visits</th>
+                                <th>Avg. Time</th>
+                                <th>Productivity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityTableBody">
+                            <!-- Table rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Rules Performance Section -->
+            <section class="rules-section">
+                <div class="rules-header">
+                    <h3>⚙️ Rules Performance</h3>
+                    <button id="manageRulesBtn" class="btn btn-secondary">Manage Rules</button>
+                </div>
+                
+                <div class="rules-grid" id="rulesGrid">
+                    <!-- Rules will be populated by JavaScript -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
