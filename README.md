@@ -38,5 +38,5 @@ A comprehensive, cross-platform time tracking solution with AI-powered window de
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/yourusername/financial-cents-timer.git
-cd financial-cents-timer
+git clone https://github.com/Jshatto/time-tracker.git
+cd time-tracker
