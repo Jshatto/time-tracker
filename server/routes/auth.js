@@ -2,18 +2,16 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 
-// Auth routes for your time tracker app
+// Demo auth routes for time tracker
 
 router.post('/login', (req, res) => {
     try {
-        // Demo login - create a token for demo user
         const user = {
             id: 'demo-user-' + Date.now(),
             email: 'demo@financialcents.com',
             name: 'Demo User'
         };
 
-        // Create JWT token (if JWT_SECRET exists)
         let token = null;
         if (process.env.JWT_SECRET) {
             token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '24h' });
@@ -26,6 +24,7 @@ router.post('/login', (req, res) => {
             token: token
         });
     } catch (error) {
+        console.error('Login error:', error);
         res.status(500).json({ 
             success: false, 
             message: 'Login failed',
@@ -36,8 +35,7 @@ router.post('/login', (req, res) => {
 
 router.get('/profile', (req, res) => {
     try {
-        // Return demo user profile
-        const user = {
+        const user = req.user || {
             id: 'demo-user',
             email: 'demo@financialcents.com',
             name: 'Demo User'
@@ -48,6 +46,7 @@ router.get('/profile', (req, res) => {
             user: user
         });
     } catch (error) {
+        console.error('Profile error:', error);
         res.status(500).json({ 
             success: false, 
             message: 'Profile fetch failed',
@@ -60,6 +59,13 @@ router.post('/logout', (req, res) => {
     res.json({ 
         success: true, 
         message: 'Logout successful' 
+    });
+});
+
+router.get('/status', (req, res) => {
+    res.json({ 
+        success: true, 
+        message: 'Auth service is running' 
     });
 });
 
