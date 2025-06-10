@@ -134,7 +134,7 @@ setupRoutes() {
   this.app.get('/ping', (req,res) => res.json({ pong:true, timestamp:new Date() }));
 
   // API
-  this.app.use('/api/auth', require('./middleware/auth'));        // ← ADD THIS LINE
+  this.app.use('/api/auth', require('./routes/auth'));        // ← ADD THIS LINE
   this.app.use('/api/projects', projectsRouter);
   this.app.use('/api/time-entries', timeEntriesRouter);
   this.app.use('/api/window-tracking', windowTrackingRouter);
