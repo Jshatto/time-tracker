@@ -25,6 +25,7 @@ const timeEntriesRouter    = require('./routes/timeEntries');
 const windowTrackingRouter = require('./routes/windowTracking');
 const analyticsRouter      = require('./routes/analytics');
 const syncRouter           = require('./routes/sync');
+const authRouter           = require('./routes/auth');
 
 // Import middleware
 const authMiddleware       = require('./middleware/auth');
