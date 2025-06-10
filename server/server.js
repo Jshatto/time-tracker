@@ -132,9 +132,11 @@ setupRoutes() {
   // Health
   this.app.get('/health', (req,res) => res.json({ status:'ok', uptime:process.uptime(), timestamp: new Date() }));
   this.app.get('/ping', (req,res) => res.json({ pong:true, timestamp:new Date() }));
-
+  
+// Apply auth middleware to all requests (optional)
+this.app.use(require('./middleware/auth'));
   // API
-  this.app.use('/api/auth', require('./routes/auth'));        // ← ADD THIS LINE
+this.app.use('/api/auth', require('./routes/auth'));     // ← ADD THIS LINE
   this.app.use('/api/projects', projectsRouter);
   this.app.use('/api/time-entries', timeEntriesRouter);
   this.app.use('/api/window-tracking', windowTrackingRouter);
